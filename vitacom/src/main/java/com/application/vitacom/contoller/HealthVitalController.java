@@ -14,28 +14,28 @@ public class HealthVitalController {
     @Autowired
     private HealthVitalService healthVitalService;
 
-    @GetMapping("/healthvitals")
-    public List<HealthVital> getAllHealthVitals() {
-        return healthVitalService.getAllHealthVitals();
+    @GetMapping("/users/{username}/vitals")
+    public List<HealthVital> getAllHealthVitals(@PathVariable String username) {
+        return healthVitalService.getAllHealthVitals(username);
     }
 
-    @GetMapping("/healthvitals/{id}")
-    public HealthVital getHealthVital(@PathVariable Long id) {
-        return healthVitalService.getHealthVital(id);
+    @GetMapping("/users/{username}/vitals/{id}")
+    public HealthVital getHealthVital(@PathVariable String username, @PathVariable Long id) {
+        return healthVitalService.getHealthVital(username, id);
     }
 
-    @PostMapping("/healthvitals")
-    public HealthVital createHealthVital(@RequestBody HealthVital healthVital) {
+    @PostMapping("/users/{username}/vitals")
+    public HealthVital createHealthVital(@PathVariable String username, @RequestBody HealthVital healthVital) {
         return healthVitalService.createHealthVital(healthVital);
     }
 
-    @PutMapping("/healthvitals/{id}")
-    public HealthVital updateHealthVital(@PathVariable Long id, @RequestBody HealthVital healthVital) {
-        return healthVitalService.updateHealthVital(id, healthVital);
+    @PutMapping("/users/{username}/vitals/{id}")
+    public HealthVital updateHealthVital(@PathVariable String username, @PathVariable Long id, @RequestBody HealthVital healthVital) {
+        return healthVitalService.updateHealthVital(username, id, healthVital);
     }
 
-    @DeleteMapping("/healthvitals/{id}")
-    public void deleteHealthVital(@PathVariable Long id) {
+    @DeleteMapping("/users/{username}/vitals/{id}")
+    public void deleteHealthVital(@PathVariable String username, @PathVariable Long id) {
         healthVitalService.deleteHealthVital(id);
     }
 }

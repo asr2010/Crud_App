@@ -15,13 +15,13 @@ public class HealthVitalServiceImpl implements HealthVitalService {
     private HealthVitalRepository healthVitalRepository;
 
     @Override
-    public List<HealthVital> getAllHealthVitals() {
-        return healthVitalRepository.findAll();
+    public List<HealthVital> getAllHealthVitals(String username) {
+        return healthVitalRepository.findByUsername(username);
     }
 
     @Override
-    public HealthVital getHealthVital(Long id) {
-        return healthVitalRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Health Vital not found with id " + id));
+    public HealthVital getHealthVital(String username, Long id) {
+        return healthVitalRepository.findByUsernameAndId(username, id).orElseThrow(() -> new ResourceNotFoundException("Health Vital not found "));
     }
 
     @Override
@@ -30,8 +30,8 @@ public class HealthVitalServiceImpl implements HealthVitalService {
     }
 
     @Override
-    public HealthVital updateHealthVital(Long id, HealthVital healthVital) {
-        HealthVital existingHealthVital = healthVitalRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Health Vital not found with id " + id));
+    public HealthVital updateHealthVital(String username, Long id, HealthVital healthVital) {
+        HealthVital existingHealthVital = healthVitalRepository.findByUsernameAndId(username, id).orElseThrow(() -> new ResourceNotFoundException("Health Vital not found with id " + id));
         existingHealthVital.setHeartRate(healthVital.getHeartRate());
         existingHealthVital.setBloodPressure(healthVital.getBloodPressure());
         existingHealthVital.setWeight(healthVital.getWeight());

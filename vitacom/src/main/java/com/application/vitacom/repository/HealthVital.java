@@ -11,6 +11,7 @@ public class HealthVital {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String username;
     private Integer heartRate;
     private Integer bloodPressure;
     private Integer weight;
@@ -23,6 +24,14 @@ public class HealthVital {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getHeartRate() {

@@ -1,26 +1,52 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useAuth } from "./security/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { deleteVitalApi, retrieveAllVitalsForUsernameApi } from "../services/api/VitalsApiService";
 
 function VitalsListComponent(){
 
+    const authContext = useAuth()
+
+    const username = authContext.username
 
     const [healthData, setHealthData] = useState([]);
+    const [message, setMessage] = useState(null)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await axios.get("http://localhost:8080/healthvitals");
-            setHealthData(result.data);
-        };
-        fetchData();
-    }, []);
-    const vitals = [
-        {id: 1, heartRate: '120', bloodPressure: '130/80', weight: '180'},
-        {id: 2, heartRate: '130', bloodPressure: '120/80', weight: '170'},
-        {id: 3, heartRate: '80', bloodPressure: '110/80', weight: '160'},
-    ]
+    useEffect(() => {refreshVitals()}, []);
+    const navigate= useNavigate()
+
+    function refreshVitals(){
+        retrieveAllVitalsForUsernameApi(username)
+        .then(response => {
+            setHealthData(response.data)
+        })
+        .catch(error => console.log(error))
+    }
+
+    function deleteVital(id) {
+        deleteVitalApi(username, id)
+        .then(
+            () =>{
+                setMessage(`Delete of vital with id = ${id} successful`)
+                refreshVitals()
+            }
+        )
+        .catch(error => console.log(error))
+
+    }
+
+    function updateVital(id) {
+        navigate(`/vital/${id}`)
+
+    }
+
+    function addNewVital() {
+        navigate(`/vital/-1`)
+    }
     return(
         <div className="container">
             <h1>Your Vitals!</h1>
+            {message && <div className="alert alert-warning">{message}</div>}
             <div>
                 <table className="table">
                     <thead>
@@ -29,6 +55,8 @@ function VitalsListComponent(){
                             <td>Heart Rate</td>
                             <td>Blood Pressure</td>
                             <td>Weight</td>
+                            <td>Delete</td>
+                            <td>Update</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +68,8 @@ function VitalsListComponent(){
                                     <td>{vital.heartRate}</td>
                                     <td>{vital.bloodPressure}</td>
                                     <td>{vital.weight}</td>
+                                    <td><button className="btn btn-warning" onClick={ () => deleteVital(vital.id)}>Delete</button></td>
+                                    <td><button className="btn btn-success" onClick={ () => updateVital(vital.id)}>Update</button></td>
                                 </tr>
                             )
                         )
@@ -47,6 +77,7 @@ function VitalsListComponent(){
                     </tbody>
                 </table>
             </div>
+            <div className="btn btn-success m-5" onClick={addNewVital}>Add new Vitals</div>
         </div>
     )
 }
