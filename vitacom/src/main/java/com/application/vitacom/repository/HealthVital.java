@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+
 @Entity
 public class HealthVital {
     @Id
@@ -15,6 +17,9 @@ public class HealthVital {
     private Integer heartRate;
     private Integer bloodPressure;
     private Integer weight;
+    private  Float bloodGlucose;
+    private Float temperature;
+    private LocalDate entryDate;
 
     //getters and setters
 
@@ -56,5 +61,29 @@ public class HealthVital {
 
     public void setWeight(Integer weight) {
         this.weight = weight;
+    }
+
+    public Float getBloodGlucose() {
+        return bloodGlucose;
+    }
+
+    public void setBloodGlucose(Float bloodGlucose) {
+        this.bloodGlucose = bloodGlucose;
+    }
+
+    public Float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Float temperature) {
+        this.temperature = temperature;
+    }
+
+    public LocalDate getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(LocalDate entryDate) {
+        this.entryDate = entryDate;
     }
 }

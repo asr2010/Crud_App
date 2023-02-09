@@ -35,6 +35,9 @@ public class HealthVitalServiceImpl implements HealthVitalService {
         existingHealthVital.setHeartRate(healthVital.getHeartRate());
         existingHealthVital.setBloodPressure(healthVital.getBloodPressure());
         existingHealthVital.setWeight(healthVital.getWeight());
+        existingHealthVital.setBloodGlucose(healthVital.getBloodGlucose());
+        existingHealthVital.setTemperature(healthVital.getTemperature());
+        existingHealthVital.setEntryDate(healthVital.getEntryDate());
         return healthVitalRepository.save(existingHealthVital);
     }
 

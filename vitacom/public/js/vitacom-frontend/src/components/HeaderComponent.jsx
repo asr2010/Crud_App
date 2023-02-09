@@ -25,7 +25,10 @@ function HeaderComponent(){
                                     {isAuthenticated && <Link className="nav-link" to="/vitals">Vitals</Link>}
                                 </li>
                                 <li className="nav-item fs-5">
-                                    {isAuthenticated && <Link className="nav-link" to="/vital/-1">Add New Vitals</Link>}
+                                    {isAuthenticated && <Link className="nav-link" to="/vital/-1">Add New</Link>}
+                                </li>
+                                <li className="nav-item fs-5">
+                                    {isAuthenticated && <Link className="nav-link" to="/analysis">Analyze</Link>}
                                 </li>
                             </ul>
                         </div>

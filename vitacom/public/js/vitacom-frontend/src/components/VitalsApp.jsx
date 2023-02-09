@@ -9,6 +9,7 @@ import VitalsListComponent from "./VitalsListComponent"
 import './VitalsApp.css'
 import AuthProvider, { useAuth } from "./security/AuthContext"
 import VitalComponent from "./VitalComponent"
+import AnalyzeComponent from "./AnalyzeComponent"
 
 function AuthenticatedRoute({ children }) {
     const authContext = useAuth()
@@ -43,6 +44,12 @@ export default function VitalsApp() {
                         <Route path='/vital/:id' element={
                             <AuthenticatedRoute>
                                 <VitalComponent />
+                            </AuthenticatedRoute>
+
+                        } />
+                        <Route path='/analysis' element={
+                            <AuthenticatedRoute>
+                                <AnalyzeComponent />
                             </AuthenticatedRoute>
 
                         } />

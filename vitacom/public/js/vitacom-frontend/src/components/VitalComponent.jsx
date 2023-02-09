@@ -15,6 +15,9 @@ export default function VitalComponent(){
     const [heartRate, setHeartRate] = useState('')
     const [bloodPressure, setBloodPressure] = useState('')
     const [weight, setWeight] = useState('')
+    const [bloodGlucose, setBloodGlucose] = useState('')
+    const [temperature, setTemperature] = useState('')
+    const [entryDate, setEntryDate] = useState(null)
     
     useEffect (
         () => {
@@ -25,6 +28,9 @@ export default function VitalComponent(){
                     setHeartRate(response.data.heartRate)
                     setBloodPressure(response.data.bloodPressure)
                     setWeight(response.data.weight)
+                    setBloodGlucose(response.data.bloodGlucose)
+                    setTemperature(response.data.temperature)
+                    setEntryDate(response.data.entryDate)
                 }
                 )
                 .catch(error =>console.log(error))
@@ -40,7 +46,10 @@ export default function VitalComponent(){
                 username: username,
                 heartRate: values.heartRate,
                 bloodPressure: values.bloodPressure,
-                weight: values.weight
+                weight: values.weight,
+                bloodGlucose: values.bloodGlucose,
+                temperature: values.temperature,
+                entryDate: values.entryDate
             }
             console.log(vital)
     
@@ -65,10 +74,19 @@ export default function VitalComponent(){
                 errors.heartRate = "Plese provide value for Heart Rate"
             }
             if (values.bloodPressure == null || values.bloodPressure === '') {
-                errors.heartRate = "Plese provide value for Blood Pressure"
+                errors.bloodPressure = "Plese provide value for Blood Pressure"
             }
             if (values.weight == null || values.weight === '') {
-                errors.heartRate = "Plese provide value for weight"
+                errors.weight = "Plese provide value for weight"
+            }
+            if (values.bloodGlucose == null || values.bloodGlucose === '') {
+                errors.bloodGlucose = "Plese provide value for Blood Glucose"
+            }
+            if (values.temperature == null || values.temperature === '') {
+                errors.temperature = "Plese provide value for Temperature"
+            }
+            if (values.entryDate == null || values.entryDate === '') {
+                errors.entryDate = "Plese provide value for Entry Date"
             }
             
             console.log(values)
@@ -82,7 +100,7 @@ export default function VitalComponent(){
             <h1>Vital Details</h1>
             <div style={{ width: '50%', margin: 'auto' }}>
                 <Formik
-                    initialValues={{ heartRate, bloodPressure, weight }}
+                    initialValues={{ heartRate, bloodPressure, weight, bloodGlucose, temperature, entryDate }}
                     enableReinitialize={true}
                     onSubmit={onSubmit}
                     validate={validate}
@@ -104,12 +122,25 @@ export default function VitalComponent(){
                                     <Field type="text" className="form-control" name="bloodPressure" />
                                 </fieldset>
                                 <fieldset className="form-group">
+                                    <label>Blood Glucose</label>
+                                    <Field type="text" className="form-control" name="bloodGlucose" />
+                                </fieldset>
+                                <fieldset className="form-group">
                                     <label>Weight</label>
                                     <Field type="text" className="form-control" name="weight" />
+                                </fieldset>
+                                <fieldset className="form-group">
+                                    <label>Temperature</label>
+                                    <Field type="text" className="form-control" name="temperature" />
+                                </fieldset>
+                                <fieldset className="form-group">
+                                    <label>Entry Date</label>
+                                    <Field type="date" className="form-control" name="entryDate" />
                                 </fieldset>
                                 <div>
                                     <button className="btn btn-success m-5" type="submit">Save</button>
                                 </div>
+
                             </Form>)
                     }
                 </Formik>
