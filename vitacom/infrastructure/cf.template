@@ -199,7 +199,62 @@
                 }
             ]
           }
+        },
+
+        
+        "rdsDBSubnetGroup": {
+           "Type": "AWS::RDS::DBSubnetGroup",
+           "Properties": {
+              "DBSubnetGroupDescription": "Subnet Group for RDS",
+              "DBSubnetGroupName": "rdsDBSubnetGroup",
+              "SubnetIds": [ {"Ref": "rdsSubnet1"}, {"Ref": "rdsSubnet2"} ],
+              "Tags": [
+                {
+                    "Key": "service",
+                    "Value": "health-vitals"
+                },
+                {
+                    "Key": "type",
+                    "Value": "network"
+                }
+            ]
+           }
+        },
+        
+        
+        "rdsDBInstance": {
+          "Type": "AWS::RDS::DBInstance",
+          "Properties": {
+            "AllocatedStorage": "20",
+            "DBInstanceClass": "db.t3.micro",
+            "AllowMajorVersionUpgrade": "true",
+            "AutoMinorVersionUpgrade": "true",
+            "AvailabilityZone": "us-east-1a",
+            "DBInstanceIdentifier": "vitalsdatabase",
+            "DBName": "vitalsdatabase",
+            "DBSubnetGroupName": "rdsDBSubnetGroup",
+            "Engine": "postgres",
+            "EngineVersion": "15.2",
+            "MasterUsername": "adminuser",
+            "MasterUserPassword": "admin1234",
+            "MultiAZ": "false",
+            "PubliclyAccessible": "true",
+            "StorageEncrypted": "false",
+            "StorageType": "gp2",
+            "Tags": [
+              {
+                  "Key": "service",
+                  "Value": "health-vitals"
+              },
+              {
+                  "Key": "type",
+                  "Value": "network"
+              }
+          ],
+            "VPCSecurityGroups": [ {"Ref": "rdsSecGroup"} ]
+          }
         }
+        
         
         
         
