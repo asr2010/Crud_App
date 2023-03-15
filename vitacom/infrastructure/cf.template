@@ -1,271 +1,351 @@
 {
-"AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Infrastructure for deployment of health vitals app",
-    "Metadata": {
-
-    },
-    "Parameters": {
-    
-    },
-    "Mappings": {
-
-    },
-    "Conditions": {
-
-    },
-    "Resources": {
-        
-        "healthVitalsVpc": {
-          "Type": "AWS::EC2::VPC",
-          "Properties": {
-            "CidrBlock": "10.0.0.0/16",
-            "EnableDnsHostnames" : true,
-            "EnableDnsSupport" : true,
-            "Tags": [
-                    {
-                        "Key": "service",
-                        "Value": "health-vitals"
-                    },
-                    {
-                        "Key": "type",
-                        "Value": "network"
-                    }
-                ]
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Infrastructure for deployment of health vitals app",
+  "Metadata": {},
+  "Parameters": {},
+  "Mappings": {},
+  "Conditions": {},
+  "Resources": {
+    "healthVitalsVpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
           }
+        ]
+      }
+    },
+    "rdsSubnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": "us-east-1a",
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
         },
-        "rdsSubnet1": {
-          "Type": "AWS::EC2::Subnet",
-          "Properties": {
-            "AvailabilityZone": "us-east-1a",
-            "VpcId": 
-                { "Ref": "healthVitalsVpc" },
-            "CidrBlock": "10.0.32.0/19",
-            "Tags": [
-                {
-                    "Key": "service",
-                    "Value": "health-vitals"
-                },
-                {
-                    "Key": "type",
-                    "Value": "network"
-                }
-            ]
+        "CidrBlock": "10.0.32.0/19",
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
           }
+        ]
+      }
+    },
+    "rdsSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": "us-east-1b",
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
         },
-        
-        "rdsSubnet2": {
-          "Type": "AWS::EC2::Subnet",
-          "Properties": {
-            "AvailabilityZone": "us-east-1b",
-            "VpcId": 
-                { "Ref": "healthVitalsVpc" },
-            "CidrBlock": "10.0.64.0/19",
-            "Tags": [
-                {
-                    "Key": "service",
-                    "Value": "health-vitals"
-                },
-                {
-                    "Key": "type",
-                    "Value": "network"
-                }
-            ]
+        "CidrBlock": "10.0.64.0/19",
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
           }
+        ]
+      }
+    },
+    "ec2Subnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": "us-east-1a",
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
         },
-        "ec2Subnet": {
-            "Type": "AWS::EC2::Subnet",
-            "Properties": {
-              "AvailabilityZone": "us-east-1a",
-              "VpcId": 
-                  { "Ref": "healthVitalsVpc" },
-              "CidrBlock": "10.0.0.0/19",
-              "Tags": [
-                  {
-                      "Key": "service",
-                      "Value": "health-vitals"
-                  },
-                  {
-                      "Key": "type",
-                      "Value": "network"
-                  }
+        "CidrBlock": "10.0.0.0/19",
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ]
+      }
+    },
+    "healthVitalsIgw": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ]
+      }
+    },
+    "attachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
+        },
+        "InternetGatewayId": {
+          "Ref": "healthVitalsIgw"
+        }
+      }
+    },
+    "appRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
+        },
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ]
+      }
+    },
+    "ec2SubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "ec2Subnet"
+        },
+        "RouteTableId": {
+          "Ref": "appRouteTable"
+        }
+      }
+    },
+    "rdsSubnet1RouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "rdsSubnet1"
+        },
+        "RouteTableId": {
+          "Ref": "appRouteTable"
+        }
+      }
+    },
+    "rdsSubnet2RouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "rdsSubnet2"
+        },
+        "RouteTableId": {
+          "Ref": "appRouteTable"
+        }
+      }
+    },
+    "internetRoute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": [
+        "attachGateway"
+      ],
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "appRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "healthVitalsIgw"
+        }
+      }
+    },
+    "rdsSecGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security Group for RDS",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "-1",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
+        },
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ]
+      }
+    },
+    "rdsDBSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Subnet Group for RDS",
+        "DBSubnetGroupName": "rdsDBSubnetGroup",
+        "SubnetIds": [
+          {
+            "Ref": "rdsSubnet1"
+          },
+          {
+            "Ref": "rdsSubnet2"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ]
+      }
+    },
+    "rdsDBInstance": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "AllocatedStorage": "20",
+        "DBInstanceClass": "db.t3.micro",
+        "AllowMajorVersionUpgrade": "true",
+        "AutoMinorVersionUpgrade": "true",
+        "AvailabilityZone": "us-east-1a",
+        "DBInstanceIdentifier": "vitalsdatabase",
+        "DBName": "vitalsdatabase",
+        "DBSubnetGroupName": "rdsDBSubnetGroup",
+        "Engine": "postgres",
+        "EngineVersion": "15.2",
+        "MasterUsername": "adminuser",
+        "MasterUserPassword": "admin1234",
+        "MultiAZ": "false",
+        "PubliclyAccessible": "true",
+        "StorageEncrypted": "false",
+        "StorageType": "gp2",
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ],
+        "VPCSecurityGroups": [
+          {
+            "Ref": "rdsSecGroup"
+          }
+        ]
+      }
+    },
+
+    "applicationSecGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Security Group for Application",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "-1",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "FromPort": "-1",
+            "ToPort": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "VpcId": {
+          "Ref": "healthVitalsVpc"
+        },
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ]
+      }
+    },
+    "ec2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "KeyName": "aws-key-pair",
+        "ImageId": "ami-0ff8a91507f77f867",
+        "InstanceType": "t2.micro",
+        "NetworkInterfaces": [ {
+          "AssociatePublicIpAddress": "true",
+          "DeviceIndex": "0",
+          "GroupSet": [{ "Ref" : "applicationSecGroup" }],
+          "SubnetId": { "Ref" : "ec2Subnet" }
+        } ],
+        "Tags": [
+          {
+            "Key": "service",
+            "Value": "health-vitals"
+          },
+          {
+            "Key": "type",
+            "Value": "network"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -ex",
+                "sudo yum update -y",
+                "sudo rpm --import https://yum.corretto.aws/corretto.key ",
+                "sudo curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo",
+                "sudo yum install -y java-17-amazon-corretto-devel"
               ]
-            }
-        },
-        
-        "healthVitalsIgw": {
-          "Type": "AWS::EC2::InternetGateway",
-          "Properties": {
-            "Tags": [
-                {
-                    "Key": "service",
-                    "Value": "health-vitals"
-                },
-                {
-                    "Key": "type",
-                    "Value": "network"
-                }
             ]
-          }
-        },
-        "attachGateway": {
-          "Type": "AWS::EC2::VPCGatewayAttachment",
-          "Properties": {
-            "VpcId": { "Ref": "healthVitalsVpc" },
-            "InternetGatewayId": { "Ref": "healthVitalsIgw" }
-          }
-        },
-        
-        "appRouteTable": {
-          "Type": "AWS::EC2::RouteTable",
-          "Properties": {
-            "VpcId": { "Ref": "healthVitalsVpc" },
-            "Tags": [
-                {
-                    "Key": "service",
-                    "Value": "health-vitals"
-                },
-                {
-                    "Key": "type",
-                    "Value": "network"
-                }
-            ]
-          }
-        },
-
-        
-        "ec2SubnetRouteTableAssociation": {
-          "Type": "AWS::EC2::SubnetRouteTableAssociation",
-          "Properties": {
-            "SubnetId": { "Ref": "ec2Subnet" },
-            "RouteTableId": { "Ref": "appRouteTable" }
-          }
-        },
-
-        "rdsSubnet1RouteTableAssociation": {
-          "Type": "AWS::EC2::SubnetRouteTableAssociation",
-          "Properties": {
-            "SubnetId": { "Ref": "rdsSubnet1" },
-            "RouteTableId": { "Ref": "appRouteTable" }
-          }
-        },
-        "rdsSubnet2RouteTableAssociation": {
-          "Type": "AWS::EC2::SubnetRouteTableAssociation",
-          "Properties": {
-            "SubnetId": { "Ref": "rdsSubnet2" },
-            "RouteTableId": { "Ref": "appRouteTable" }
-          }
-        },
-        
-
-        
-        "internetRoute": {
-          "Type": "AWS::EC2::Route",
-          "DependsOn": ["attachGateway"],
-          "Properties": {
-            "RouteTableId": 
-            { "Ref": "appRouteTable" },
-            "DestinationCidrBlock": "0.0.0.0/0",
-            "GatewayId": 
-            { "Ref": "healthVitalsIgw" }
-            
-          }
-        },
-
-        
-        "rdsSecGroup" : {
-          "Type" : "AWS::EC2::SecurityGroup",
-          "Properties" : {
-            "GroupDescription" : "Security Group for RDS",
-            "SecurityGroupIngress" : [ 
-              
-              { "IpProtocol" : "-1", "FromPort" : "-1", "ToPort" : "-1", "CidrIp" : "0.0.0.0/0" }
-              
-            ],
-            "SecurityGroupEgress" : [ 
-              
-              { "IpProtocol" : "-1", "FromPort" : "-1", "ToPort" : "-1", "CidrIp" : "0.0.0.0/0" }
-              
-            ],
-            
-            "VpcId" : { "Ref": "healthVitalsVpc" },
-            "Tags": [
-                {
-                    "Key": "service",
-                    "Value": "health-vitals"
-                },
-                {
-                    "Key": "type",
-                    "Value": "network"
-                }
-            ]
-          }
-        },
-
-        
-        "rdsDBSubnetGroup": {
-           "Type": "AWS::RDS::DBSubnetGroup",
-           "Properties": {
-              "DBSubnetGroupDescription": "Subnet Group for RDS",
-              "DBSubnetGroupName": "rdsDBSubnetGroup",
-              "SubnetIds": [ {"Ref": "rdsSubnet1"}, {"Ref": "rdsSubnet2"} ],
-              "Tags": [
-                {
-                    "Key": "service",
-                    "Value": "health-vitals"
-                },
-                {
-                    "Key": "type",
-                    "Value": "network"
-                }
-            ]
-           }
-        },
-        
-        
-        "rdsDBInstance": {
-          "Type": "AWS::RDS::DBInstance",
-          "Properties": {
-            "AllocatedStorage": "20",
-            "DBInstanceClass": "db.t3.micro",
-            "AllowMajorVersionUpgrade": "true",
-            "AutoMinorVersionUpgrade": "true",
-            "AvailabilityZone": "us-east-1a",
-            "DBInstanceIdentifier": "vitalsdatabase",
-            "DBName": "vitalsdatabase",
-            "DBSubnetGroupName": "rdsDBSubnetGroup",
-            "Engine": "postgres",
-            "EngineVersion": "15.2",
-            "MasterUsername": "adminuser",
-            "MasterUserPassword": "admin1234",
-            "MultiAZ": "false",
-            "PubliclyAccessible": "true",
-            "StorageEncrypted": "false",
-            "StorageType": "gp2",
-            "Tags": [
-              {
-                  "Key": "service",
-                  "Value": "health-vitals"
-              },
-              {
-                  "Key": "type",
-                  "Value": "network"
-              }
-          ],
-            "VPCSecurityGroups": [ {"Ref": "rdsSecGroup"} ]
           }
         }
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-    },
-    "Outputs": {
-
+      }
     }
+  },
+  "Outputs": {}
 }

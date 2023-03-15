@@ -1,0 +1,1 @@
+scp -i ~/.ssh/aws-key-pair.pem target/vitacom-0.0.1-SNAPSHOT.jar ec2-user@3.93.39.75:/home/ec2-user/
