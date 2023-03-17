@@ -194,26 +194,20 @@
         }
       }
     },
+    "rdsSercurityGroupIngress":{
+      "Type" : "AWS::EC2::SecurityGroupIngress",
+      "Properties" : {
+        "IpProtocol": "tcp",
+        "FromPort": "5432",
+        "ToPort": "5432",
+        "SourceSecurityGroupId": {"Fn::GetAtt": ["applicationSecGroup", "GroupId"]},
+        "GroupId": {"Fn::GetAtt": ["rdsSecGroup", "GroupId"]}
+      }
+    },    
     "rdsSecGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "Security Group for RDS",
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "-1",
-            "FromPort": "-1",
-            "ToPort": "-1",
-            "CidrIp": "0.0.0.0/0"
-          }
-        ],
-        "SecurityGroupEgress": [
-          {
-            "IpProtocol": "-1",
-            "FromPort": "-1",
-            "ToPort": "-1",
-            "CidrIp": "0.0.0.0/0"
-          }
-        ],
         "VpcId": {
           "Ref": "healthVitalsVpc"
         },
@@ -270,7 +264,7 @@
         "MasterUsername": "adminuser",
         "MasterUserPassword": "admin1234",
         "MultiAZ": "false",
-        "PubliclyAccessible": "true",
+        "PubliclyAccessible": "false",
         "StorageEncrypted": "false",
         "StorageType": "gp2",
         "Tags": [
