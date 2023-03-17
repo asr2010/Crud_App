@@ -128,24 +128,7 @@
         ]
       }
     },
-    "rdsRouteTable": {
-      "Type": "AWS::EC2::RouteTable",
-      "Properties": {
-        "VpcId": {
-          "Ref": "healthVitalsVpc"
-        },
-        "Tags": [
-          {
-            "Key": "service",
-            "Value": "health-vitals"
-          },
-          {
-            "Key": "type",
-            "Value": "network"
-          }
-        ]
-      }
-    },
+    
     "ec2SubnetRouteTableAssociation": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
@@ -154,28 +137,6 @@
         },
         "RouteTableId": {
           "Ref": "appRouteTable"
-        }
-      }
-    },
-    "rdsSubnet1RouteTableAssociation": {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "rdsSubnet1"
-        },
-        "RouteTableId": {
-          "Ref": "rdsRouteTable"
-        }
-      }
-    },
-    "rdsSubnet2RouteTableAssociation": {
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
-      "Properties": {
-        "SubnetId": {
-          "Ref": "rdsSubnet2"
-        },
-        "RouteTableId": {
-          "Ref": "rdsRouteTable"
         }
       }
     },
