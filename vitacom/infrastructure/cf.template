@@ -128,7 +128,6 @@
         ]
       }
     },
-    
     "ec2SubnetRouteTableAssociation": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
@@ -155,16 +154,26 @@
         }
       }
     },
-    "rdsSercurityGroupIngress":{
-      "Type" : "AWS::EC2::SecurityGroupIngress",
-      "Properties" : {
+    "rdsSercurityGroupIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
         "IpProtocol": "tcp",
         "FromPort": "5432",
         "ToPort": "5432",
-        "SourceSecurityGroupId": {"Fn::GetAtt": ["applicationSecGroup", "GroupId"]},
-        "GroupId": {"Fn::GetAtt": ["rdsSecGroup", "GroupId"]}
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "applicationSecGroup",
+            "GroupId"
+          ]
+        },
+        "GroupId": {
+          "Fn::GetAtt": [
+            "rdsSecGroup",
+            "GroupId"
+          ]
+        }
       }
-    },    
+    },
     "rdsSecGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
@@ -245,7 +254,6 @@
         ]
       }
     },
-
     "applicationSecGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
@@ -287,12 +295,20 @@
         "KeyName": "aws-key-pair",
         "ImageId": "ami-0ff8a91507f77f867",
         "InstanceType": "t2.micro",
-        "NetworkInterfaces": [ {
-          "AssociatePublicIpAddress": "true",
-          "DeviceIndex": "0",
-          "GroupSet": [{ "Ref" : "applicationSecGroup" }],
-          "SubnetId": { "Ref" : "ec2Subnet" }
-        } ],
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": "true",
+            "DeviceIndex": "0",
+            "GroupSet": [
+              {
+                "Ref": "applicationSecGroup"
+              }
+            ],
+            "SubnetId": {
+              "Ref": "ec2Subnet"
+            }
+          }
+        ],
         "Tags": [
           {
             "Key": "service",
@@ -316,6 +332,56 @@
               ]
             ]
           }
+        }
+      }
+    },
+    "s3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicRead",
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders": [
+                "*"
+              ],
+              "AllowedMethods": [
+                "*"
+              ],
+              "AllowedOrigins": [
+                "*"
+              ],
+              "ExposedHeaders": [
+                "Date"
+              ],
+              "Id": "myCORSRuleId1",
+              "MaxAge": 3600
+            }
+          ]
+        },
+        "BucketName": "vitacom-frontend",
+        "WebsiteConfiguration": {
+          "IndexDocument": "index.html"
+        },
+        "Tags": []
+      }
+    },
+    "s3BucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "s3Bucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::vitacom-frontend/*",
+              "Principal": "*"
+            }
+          ]
         }
       }
     }
